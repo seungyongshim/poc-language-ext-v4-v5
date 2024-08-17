@@ -5,9 +5,17 @@ var app = builder.Build();
 
 app.MapGet("/", async () => 
 {
-    var effect = Aff(() => Task.Delay(1000).ToUnit().ToValue());
+    var effect = Aff(async () =>
+    {
+        // Heavy wwwork
+        await Task.Delay(1000);
+        return new
+        {
+            Result = "worked1"
+        };
+    });
 
-    await effect.Run().ConfigureAwait(false);
+    return (await effect.Run().ConfigureAwait(false)).ThrowIfFail();
 });
 
 app.Run();

@@ -3,15 +3,19 @@ using static LanguageExt.Prelude;
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-app.MapGet("/", () =>
+app.MapGet("/", async () =>
 {
     var effect = liftEff(async () =>
     {
+        // Heavy wwwork
         await Task.Delay(1000).ConfigureAwait(false);
-        return unit;
+        return new
+        {
+            Result = "worked"
+        };
     });
 
-    effect.Run();
+    return await effect.RunUnsafeAsync().ConfigureAwait(false);
 });
 
 app.Run();
